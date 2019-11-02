@@ -1,6 +1,5 @@
 package app.model;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class Acordo {
@@ -17,6 +16,21 @@ public class Acordo {
 		this.valor = valor;
 		this.parcelas = parcelas;
 		this.dataAcordo = dataAcordo;
+	}
+	
+	public Acordo(Double valor, Integer parcelas) {
+		this.valor = valor;
+		this.parcelas = parcelas;
+	}
+
+	
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
 	}
 
 	public Double getValor() {
