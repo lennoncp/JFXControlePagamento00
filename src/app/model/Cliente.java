@@ -8,7 +8,8 @@ public class Cliente {
 	private String telefone;
 	private String endereco;
 	
-	public Cliente(String nome, String ndoc, String telefone, String endereco) {
+	public Cliente(Long codigo, String nome, String ndoc, String telefone, String endereco) {
+		this.codigo = codigo;
 		this.nome = nome;
 		this.ndoc = ndoc;
 		this.telefone = telefone;

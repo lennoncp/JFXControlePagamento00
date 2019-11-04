@@ -5,17 +5,22 @@ import java.sql.Date;
 public class Parcela {
 	
 	private Long codigo;
-	private Long clente;
+	private Long cliente;
 	private Long acordo;
 	private Integer parcela;
 	private Double valor;
 	private Date dataParcela;
 	private Date dataPagamento;
-	
-	@Override
-	public String toString() {
-		return "Parcela [clente=" + clente + ", acordo=" + acordo + ", parcela=" + parcela + ", valor=" + valor
-				+ ", dataParcela=" + dataParcela + ", dataPagamento=" + dataPagamento + "]";
+
+	public Parcela(Long codigo, Long cliente, Long acordo, Integer parcela, Double valor, Date dataParcela,
+			Date dataPagamento) {
+		this.codigo = codigo;
+		this.cliente = cliente;
+		this.acordo = acordo;
+		this.parcela = parcela;
+		this.valor = valor;
+		this.dataParcela = dataParcela;
+		this.dataPagamento = dataPagamento;
 	}
 
 	public Long getCodigo() {
@@ -26,12 +31,12 @@ public class Parcela {
 		this.codigo = codigo;
 	}
 
-	public Long getClente() {
-		return clente;
+	public Long getCliente() {
+		return cliente;
 	}
 
-	public void setClente(Long clente) {
-		this.clente = clente;
+	public void setCliente(Long cliente) {
+		this.cliente = cliente;
 	}
 
 	public Long getAcordo() {
@@ -72,6 +77,12 @@ public class Parcela {
 
 	public void setDataPagamento(Date dataPagamento) {
 		this.dataPagamento = dataPagamento;
+	}
+	
+	@Override
+	public String toString() {
+		return "Parcela [clente=" + cliente + ", acordo=" + acordo + ", parcela=" + parcela + ", valor=" + valor
+				+ ", dataParcela=" + dataParcela + ", dataPagamento=" + dataPagamento + "]";
 	}
 	
 }
