@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import app.db.DBConfig;
 import app.model.Acordo;
 import app.model.Parcela;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class ParcelaDAO {
@@ -57,11 +58,11 @@ public class ParcelaDAO {
 				ps.setDate(6, parcela.getDataPagamento());
 				ps.execute();
 				
-				rs = ps.executeQuery();
+				rs = ps.getGeneratedKeys();
 				
 				while (rs.next()) id = rs.getLong(1);
 			}else {
-				ps = con.prepareStatement(insert, PreparedStatement.RETURN_GENERATED_KEYS);
+				ps = con.prepareStatement(update);
 				ps.setLong(1, parcela.getCliente());
 				ps.setLong(2, parcela.getAcordo());
 				ps.setInt(3, parcela.getParcela());
@@ -75,13 +76,28 @@ public class ParcelaDAO {
 			}
 				
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.parcela = parcela;
 		return id;
 	}
 	public ObservableList<Parcela> getParcelas() {
+		rs = getResultSet(query);
+		parcelas = FXCollections.observableArrayList();
+		try {
+			while (rs.next()) {
+				Parcela parcela = new Parcela(rs.getLong("CODIGO"), 
+						                      rs.getLong("CLIENTE"), 
+						                      rs.getLong("ACORDO"), 
+						                      rs.getInt("PARCELA"), 
+						                      rs.getDouble("VALOR"), 
+						                      rs.getDate("DATAPARCELA"), 
+						                      rs.getDate("DATAPAGAMENTO"));
+				parcelas.add(parcela);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return parcelas;
 	}
 	public void setParcelas(ObservableList<Parcela> parcelas) {

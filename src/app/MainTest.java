@@ -16,12 +16,16 @@ public class MainTest {
 		
 		ParcelaDAO pdao = new ParcelaDAO();
 		Date date = new Date();
-		Parcela parcela = new Parcela(null, 1L, 1L, 1, 1000D, new java.sql.Date(date.getTime()), null);
+		Parcela parcela = new Parcela(null, 3L, 3L, 3, 3000D, new java.sql.Date(date.getTime()), null);
 		
 		Long id = pdao.setParcela(parcela);
 		System.out.println(id);
 		
 		System.out.println(pdao.getParcela(id));
+		
+		List<Parcela> parcelas = pdao.getParcelas();
+		
+		System.out.println(parcelas);
 		
 		
 		
