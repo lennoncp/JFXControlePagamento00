@@ -37,6 +37,7 @@ public class AcordoDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		DBConfig.closeConnection();
 		return this.acordo;
 	}
 

@@ -3,6 +3,7 @@ package app;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import app.dao.AcordoDAO;
@@ -14,6 +15,8 @@ import app.model.Parcela;
 import app.model.TableViewParcela;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -28,7 +31,9 @@ public class ParcelasController implements Initializable{
 	private ClienteDAO cdao = new ClienteDAO();
 	private AcordoDAO adao = new AcordoDAO();
 	
-	private ObservableList<TableViewParcela> parcelas = FXCollections.observableArrayList();
+	private ObservableList<TableViewParcela> tvpParcelas = FXCollections.observableArrayList();
+	private ObservableList<Parcela> parcelas = FXCollections.observableArrayList();
+	private ObservableList<Button> buttons = FXCollections.observableArrayList();
 	
 	Calendar calendar = Calendar.getInstance();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -52,28 +57,30 @@ public class ParcelasController implements Initializable{
     private Button btnSalvar;
 
     @FXML
-    private TableView<Parcela> tvParcelas;
+    private TableView<TableViewParcela> tvParcelas;
 
     @FXML
-    private TableColumn<Parcela, String> tcNome;
+    private TableColumn<TableViewParcela, String> tcNome;
 
     @FXML
-    private TableColumn<Parcela, String> tcAcordo;
+    private TableColumn<TableViewParcela, String> tcAcordo;
 
     @FXML
-    private TableColumn<Parcela, Integer> tcParcela;
+    private TableColumn<TableViewParcela, Integer> tcParcela;
 
     @FXML
-    private TableColumn<Parcela, Double> tcValor;
+    private TableColumn<TableViewParcela, Double> tcValor;
 
     @FXML
-    private TableColumn<Parcela, String> tcVencimento;
+    private TableColumn<TableViewParcela, String> tcVencimento;
 
     @FXML
-    private TableColumn<Parcela, String> tcpagamentos;
+    private TableColumn<TableViewParcela, String> tcpagamentos;
 
     @FXML
-    private TableColumn<Parcela, ObservableList<Button>> tcButoes;
+    private TableColumn<TableViewParcela, ObservableList<Button>> tcButoes;
+    
+    private TableViewParcela tvp;
 
     @FXML
     void salvarParcela() {
@@ -88,27 +95,37 @@ public class ParcelasController implements Initializable{
 		tcNome.setCellValueFactory(new PropertyValueFactory("cliente"));
 		tcAcordo.setCellValueFactory(new PropertyValueFactory("acordo"));
 		tcParcela.setCellValueFactory(new PropertyValueFactory("parcela"));
+		tcValor.setCellValueFactory(new PropertyValueFactory("valor"));
 		tcVencimento.setCellValueFactory(new PropertyValueFactory("dataparcela"));
 		tcpagamentos.setCellValueFactory(new PropertyValueFactory("datapagamento"));
-		tcButoes.setCellValueFactory(new PropertyValueFactory("buttons"));
+		tcButoes.setCellValueFactory(new PropertyValueFactory("pagar"));
 		
-		ObservableList<Parcela> parcelas = FXCollections.observableArrayList();
+		
 		
 		parcelas = pdao.getParcelas();
 		
 		for(Parcela p: parcelas) {
-			/*calendar.setTime(p.getDataParcela());
-			String vencimento = sdf.format(calendar.getTime());
-			calendar.setTime(p.getDataPagamento());
-			String pagamento = sdf.format(calendar.getTime());*/
 			
 			Cliente cliente = cdao.getCliente(p.getCliente());
 			
 			Acordo acordo = adao.getAcordo(p.getAcordo());
 			
-			TableViewParcela tvp = new TableViewParcela(p.getCodigo(), cliente, acordo, p.getParcela(), p.getValor(), p.getDataParcela(), p.getDataPagamento());
+			tvp = new TableViewParcela();
+			tvp.setCodigo(p.getCodigo());
+			tvp.setCliente(cliente.getNome());
+			tvp.setAcordo(acordo.getValor()+"");
+			tvp.setParcela(p.getParcela());
+			tvp.setValor(p.getValor());
+			tvp.setDataparcela(sdf.format(new Date(p.getDataParcela().getTime())));	
+			if(!(p.getDataPagamento() == null)) {
+				tvp.setDatapagamento(sdf.format(new Date(p.getDataPagamento().getTime())));
+			}else {
+				tvp.setDatapagamento("--");
+			}
 			
-			tvParcelas.setItems(parcelas);
+			tvpParcelas.add(tvp);
+			
+			tvParcelas.setItems(tvpParcelas);
 		}
 		
 		

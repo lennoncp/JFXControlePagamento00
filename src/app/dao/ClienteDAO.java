@@ -35,6 +35,7 @@ public class ClienteDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		DBConfig.closeConnection();
 		return cliente;
 	}
 	public Long setCliente(Cliente cliente) {
