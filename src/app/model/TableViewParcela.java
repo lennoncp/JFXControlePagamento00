@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import app.dao.ParcelaDAO;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -18,10 +19,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class TableViewParcela {
@@ -34,65 +40,54 @@ public class TableViewParcela {
 	private SimpleStringProperty dataparcela;
 	private SimpleStringProperty datapagamento;
 	
-	private SimpleObjectProperty<Button> pagar = new SimpleObjectProperty<Button>(new Button("pagar"));
+	private SimpleObjectProperty<Button> pagar;
+	//private SimpleObjectProperty<Button> pagar = new SimpleObjectProperty<Button>(new Button("pagar"));
 	
-	private Calendar calendar;
+	//private Calendar calendar;
 	
-	private Stage telaPagar;
+	
 	
 	public TableViewParcela() {
 	
 		
-		this.pagar.get().setOnAction(new EventHandler<ActionEvent>() {
+		/*this.pagar.get().setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				telaPagar = new Stage();
+				Stage telaPagar = new Stage();
 
-				try {
-					AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Parcelas.fxml"));
-					Scene scene = new Scene(root);
-					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-					telaPagar.setScene(scene);
+
+					//Parent root = FXMLLoader.load(TableViewParcela.class.getResource("TelaPagar.fxml"));
+					AnchorPane root = new AnchorPane();
+					GridPane gp = new GridPane();
+					TextField valor = new TextField(String.valueOf(getValor()));
+					Button pagar = new Button("Pagar");
+					
+					pagar.setOnAction(new EventHandler<ActionEvent>() {
+						
+						@Override
+						public void handle(ActionEvent event) {
+							
+							ParcelaDAO pdao = new ParcelaDAO();
+							pdao.pagaParcela(getCodigo());
+							
+						}
+					});
+					
+					gp.add(valor, 0, 0);
+					gp.add(pagar, 1, 0);
+					
+					HBox hb = new HBox(gp);
+					root.getChildren().add(hb);
+					telaPagar.setScene(new Scene(root));
+					telaPagar.initModality(Modality.WINDOW_MODAL);
+					telaPagar.initOwner(((Node)event.getSource()).getScene().getWindow());
 					telaPagar.show();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+
 				
 			}
-		});
+		});*/
 		
-	}
-
-	public TableViewParcela(Long codigo, Cliente cliente, Acordo acordo, Integer parcela, Double valor, Date dataparcela,
-			Date datapagamento) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		//calendar = Calendar.getInstance();
-		calendar = new GregorianCalendar();
-
-		
-		this.codigo = new SimpleLongProperty(codigo);
-		this.cliente = new SimpleStringProperty(cliente.getNome());
-		this.acordo = new SimpleStringProperty(acordo.getValor()+"");
-		this.parcela = new SimpleIntegerProperty(parcela);
-		this.valor = new SimpleDoubleProperty(valor);
-		
-		calendar.setTime(dataparcela);
-		this.dataparcela = new SimpleStringProperty(sdf.format(calendar.getTime()));
-		calendar.setTime(datapagamento);
-		this.datapagamento = new SimpleStringProperty(sdf.format(calendar.getTime()));
-		
-		this.pagar.get().setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println(getCliente());
-			}
-		});
-		
-
 	}
 
 	public Long getCodigo() {
@@ -153,6 +148,10 @@ public class TableViewParcela {
 
 	public Button getPagar() {
 		return pagar.get();
+	}
+	
+	public void setPagar(SimpleObjectProperty<Button> pagar) {
+		this.pagar = pagar;
 	}
 
 

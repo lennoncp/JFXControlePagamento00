@@ -1,6 +1,7 @@
 package app.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +25,8 @@ public class ParcelaDAO {
 	
 	private final String insert = " INSERT INTO PARCELA(CLIENTE, ACORDO, PARCELA, VALOR, DATAPARCELA, DATAPAGAMENTO) VALUES(?,?,?,?,?,?) ";
 	private final String update = " UPDATE PARCELA SET CLIENTE = ?,  ACORDO = ?, PARCELA = ?, VALOR = ?, DATAPARCELA = ?, DATAPAGAMENTO = ?  WHERE CODIGO = ? ";
+	
+	private final String updateParcela = " UPDATE PARCELA SET DATAPAGAMENTO = ? WHERE CODIGO = ? ";
 	
 	public Parcela getParcela(Long id) {
 		rs = getResultSet(queryID, id);
@@ -102,6 +105,21 @@ public class ParcelaDAO {
 	}
 	public void setParcelas(ObservableList<Parcela> parcelas) {
 		this.parcelas = parcelas;
+	}
+	
+	public Boolean pagaParcela(Long codigo) {
+		con = DBConfig.getConnection();
+		Boolean pagou = false;
+		try {
+			ps = con.prepareStatement(updateParcela);
+			ps.setDate(1, new Date(new java.util.Date().getTime()));
+			ps.setLong(2, codigo);
+			pagou = ps.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pagou;
 	}
 	
 	public ResultSet getResultSet(String sql) {

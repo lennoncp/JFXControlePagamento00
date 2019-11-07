@@ -13,17 +13,27 @@ import app.model.Acordo;
 import app.model.Cliente;
 import app.model.Parcela;
 import app.model.TableViewParcela;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ParcelasController implements Initializable{
 	
@@ -81,6 +91,8 @@ public class ParcelasController implements Initializable{
     private TableColumn<TableViewParcela, ObservableList<Button>> tcButoes;
     
     private TableViewParcela tvp;
+    
+    private SimpleObjectProperty<Button> pagar; /* = new SimpleObjectProperty<Button>(new Button("pagar"));*/
 
     @FXML
     void salvarParcela() {
@@ -88,6 +100,7 @@ public class ParcelasController implements Initializable{
     	//TableViewParcela tvp = new TableViewParcela(codigo, cliente, acordo, parcela, valor, dataparcela, datapagamento)
 
     }
+    
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -100,7 +113,12 @@ public class ParcelasController implements Initializable{
 		tcpagamentos.setCellValueFactory(new PropertyValueFactory("datapagamento"));
 		tcButoes.setCellValueFactory(new PropertyValueFactory("pagar"));
 		
+		carregaTableViewParcela();
 		
+	}
+	
+	private void carregaTableViewParcela() {
+		tvParcelas.getItems().clear();
 		
 		parcelas = pdao.getParcelas();
 		
@@ -123,11 +141,56 @@ public class ParcelasController implements Initializable{
 				tvp.setDatapagamento("--");
 			}
 			
+			Button pagarParcela = new Button("Pagar");
+			
+			pagarParcela.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					Stage telaPagar = new Stage();
+
+
+						//Parent root = FXMLLoader.load(TableViewParcela.class.getResource("TelaPagar.fxml"));
+						AnchorPane root = new AnchorPane();
+						GridPane gp = new GridPane();
+						TextField valor = new TextField(String.valueOf(tvp.getValor()));
+						
+						pagarParcela.setOnAction(new EventHandler<ActionEvent>() {
+							
+							@Override
+							public void handle(ActionEvent event) {
+								
+								ParcelaDAO pdao = new ParcelaDAO();
+								pdao.pagaParcela(tvp.getCodigo()); 
+								
+								carregaTableViewParcela(); 
+								
+							}
+						});
+						
+						gp.add(valor, 0, 0);
+						gp.add(pagarParcela, 1, 0);
+						
+						HBox hb = new HBox(gp);
+						root.getChildren().add(hb);
+						telaPagar.setScene(new Scene(root));
+						telaPagar.initModality(Modality.WINDOW_MODAL);
+						telaPagar.initOwner(((Node)event.getSource()).getScene().getWindow());
+						telaPagar.show();
+
+					
+				}
+			}); 
+			
+			
+			
+			pagar = new SimpleObjectProperty<Button>(pagarParcela);
+			tvp.setPagar(pagar);
+			
 			tvpParcelas.add(tvp);
 			
 			tvParcelas.setItems(tvpParcelas);
 		}
-		
 		
 	}
 
